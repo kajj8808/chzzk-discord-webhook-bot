@@ -1,6 +1,6 @@
 # Chzzk Discord Webhook
 
-치지직에서 방송 시작시 자동으로 Disocrd Webhook로 메세지를 보내주는 APP입니다.
+치지직에서 방송 시작시 자동으로 Disocrd Webhook메세지를 보내주는 App입니다.
 
 ## 설치
 

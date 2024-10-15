@@ -1,6 +1,7 @@
 import { LiveContent } from "../types/interface";
 import db from "./db";
 import { sendLiveDataToDiscord } from "./discord";
+import _ from "lodash";
 
 const API_URL = "https://api.chzzk.naver.com/service/v3";
 
@@ -55,7 +56,8 @@ export async function updateChzzkChannels() {
               thumbnail: live.liveImageUrl,
             },
           });
-          if (prevLive !== newLive) {
+
+          if (!_.isEqual(prevLive, newLive)) {
             await sendLiveDataToDiscord(newLive);
           }
           if (live.closeDate) {
@@ -76,7 +78,7 @@ export async function updateChzzkChannels() {
             category: live.categoryType,
             live_category: live.liveCategory,
             live_category_value: live.liveCategoryValue,
-            thumbnail: live.liveImageUrl,
+            thumbnail: getChzzkThumbnail(live.liveImageUrl),
             title: live.liveTitle,
             open: new Date(live.openDate),
             channel: {
@@ -92,4 +94,11 @@ export async function updateChzzkChannels() {
       console.error(`#${result.code}-${result.message}`);
     }
   }
+}
+
+function getChzzkThumbnail(url: string) {
+  const splitUrl = url.split("/image");
+  const baseUrl = splitUrl[0];
+
+  return `${baseUrl}/image_480.jpg?date=${new Date().getTime()}`;
 }

@@ -15,15 +15,16 @@ export async function sendLiveDataToDiscord(live: Live) {
   if (channel) {
     const embed = new EmbedBuilder()
       .setTitle(live.title)
-      .setColor("LightGrey")
+      .setColor("Green")
       .setAuthor({
         name: channel.name ?? "name error",
         iconURL: channel.profile ?? "icon error",
         url: `https://chzzk.naver.com/${channel.id}`,
       })
-      .setDescription(live.live_category_value)
+      .setDescription(`${live.live_category_value} - ${live.live_category}`)
       .setURL(`https://chzzk.naver.com/live/${live.channel_id}`)
-      .setThumbnail(live.thumbnail);
+      .setThumbnail(live.thumbnail)
+      .setTimestamp();
 
     webhookClient.send({
       embeds: [embed],

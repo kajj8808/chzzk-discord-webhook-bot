@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import db from "../lib/db";
 import { sleep } from "../lib/lib";
+import { updateChzzkChannels } from "../lib/chzzk";
 
 const channel = new Hono().basePath("/channel");
 
@@ -55,12 +56,10 @@ serve({
   port,
 });
 
-import {} from "../lib/discord";
-
 (async () => {
   while (true) {
-    console.log("3 second!");
+    await updateChzzkChannels();
     // 10분에 한번씩 반복
-    await sleep(1000 * 60 * 1);
+    await sleep(1000 * 60 * 10);
   }
 })();
