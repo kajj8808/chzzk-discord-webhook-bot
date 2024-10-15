@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id      String  @id
+  name    String?
+  profile String?
+  lives   Live[]
+}
+
+model Live {
+  id                  Int       @id
+  title               String
+  thumbnail           String
+  category            String
+  live_category       String
+  live_category_value String
+  open                DateTime
+  close               DateTime?
+  channel_id          String?
+
+  channel Channel? @relation(fields: [channel_id], references: [id])
+}
