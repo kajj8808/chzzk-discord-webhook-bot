@@ -1,6 +1,7 @@
 import { Live } from "@prisma/client";
 import { EmbedBuilder, WebhookClient } from "discord.js";
 import db from "./db";
+import { getChzzkThumbnail } from "./chzzk";
 
 const webhookClient = new WebhookClient({
   url: process.env.WEBHOOK_URL!,
@@ -23,7 +24,7 @@ export async function sendLiveDataToDiscord(live: Live) {
       })
       .setDescription(`${live.live_category_value} - ${live.live_category}`)
       .setURL(`https://chzzk.naver.com/live/${live.channel_id}`)
-      .setThumbnail(live.thumbnail)
+      .setThumbnail(getChzzkThumbnail(live.thumbnail))
       .setTimestamp();
 
     webhookClient.send({

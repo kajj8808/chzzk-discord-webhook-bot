@@ -78,7 +78,7 @@ export async function updateChzzkChannels() {
             category: live.categoryType,
             live_category: live.liveCategory,
             live_category_value: live.liveCategoryValue,
-            thumbnail: getChzzkThumbnail(live.liveImageUrl),
+            thumbnail: live.liveImageUrl,
             title: live.liveTitle,
             open: new Date(live.openDate),
             channel: {
@@ -96,7 +96,7 @@ export async function updateChzzkChannels() {
   }
 }
 
-function getChzzkThumbnail(url: string) {
+export function getChzzkThumbnail(url: string) {
   const splitUrl = url.split("/image");
   const baseUrl = splitUrl[0];
 
