@@ -37,39 +37,39 @@ export async function updateChzzkChannels() {
           profile: live.channel.channelImageUrl,
         },
       });
+
       const prevLive = await db.live.findUnique({
         where: {
           id: live.liveId,
         },
       });
+
       if (prevLive) {
-        if (prevLive.live_category == live.liveCategory) {
-          const newLive = await db.live.update({
+        const newLive = await db.live.update({
+          where: {
+            id: prevLive.id,
+          },
+          data: {
+            category: live.categoryType,
+            live_category: live.liveCategory,
+            live_category_value: live.liveCategoryValue,
+            title: live.liveTitle,
+            thumbnail: live.liveImageUrl,
+          },
+        });
+
+        if (!_.isEqual(prevLive, newLive)) {
+          await sendLiveDataToDiscord(newLive);
+        }
+        if (live.closeDate) {
+          await db.live.update({
             where: {
               id: prevLive.id,
             },
             data: {
-              category: live.categoryType,
-              live_category: live.liveCategory,
-              live_category_value: live.liveCategoryValue,
-              title: live.liveTitle,
-              thumbnail: live.liveImageUrl,
+              close: new Date(live.closeDate),
             },
           });
-
-          if (!_.isEqual(prevLive, newLive)) {
-            await sendLiveDataToDiscord(newLive);
-          }
-          if (live.closeDate) {
-            await db.live.update({
-              where: {
-                id: prevLive.id,
-              },
-              data: {
-                close: new Date(live.closeDate),
-              },
-            });
-          }
         }
       } else {
         const newLive = await db.live.create({

@@ -59,7 +59,7 @@ serve({
 (async () => {
   while (true) {
     await updateChzzkChannels();
-    // 10분에 한번씩 반복
-    await sleep(1000 * 60 * 10);
+    // 5분에 한번씩 반복
+    await sleep(1000 * 60 * 5);
   }
 })();
