@@ -24,7 +24,7 @@ export async function sendLiveDataToDiscord(live: Live) {
       })
       .setDescription(`${live.live_category_value} - ${live.live_category}`)
       .setURL(`https://chzzk.naver.com/live/${live.channel_id}`)
-      .setThumbnail(getChzzkThumbnail(live.thumbnail))
+      .setThumbnail(live.thumbnail)
       .setTimestamp();
 
     webhookClient.send({

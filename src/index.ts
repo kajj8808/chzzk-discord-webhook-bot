@@ -1,7 +1,7 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import db from "../lib/db";
-import { sleep } from "../lib/lib";
+import { sleep } from "../lib/utile";
 import { updateChzzkChannels } from "../lib/chzzk";
 
 const channel = new Hono().basePath("/channel");

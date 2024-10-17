@@ -2,6 +2,7 @@ import { LiveContent } from "../types/interface";
 import db from "./db";
 import { sendLiveDataToDiscord } from "./discord";
 import _ from "lodash";
+import { isEqualLive } from "./utile";
 
 const API_URL = "https://api.chzzk.naver.com/service/v3";
 
@@ -54,11 +55,15 @@ export async function updateChzzkChannels() {
             live_category: live.liveCategory,
             live_category_value: live.liveCategoryValue,
             title: live.liveTitle,
-            thumbnail: live.liveImageUrl,
           },
         });
 
-        if (!_.isEqual(prevLive, newLive)) {
+        if (!isEqualLive(prevLive, newLive)) {
+          // 다른 방송으로 변경 했을때만 thumnail을 변경.
+          await db.live.update({
+            where: { id: prevLive.id },
+            data: { thumbnail: getChzzkThumbnail(live.liveImageUrl) },
+          });
           await sendLiveDataToDiscord(newLive);
         }
         if (live.closeDate) {
@@ -78,7 +83,7 @@ export async function updateChzzkChannels() {
             category: live.categoryType,
             live_category: live.liveCategory,
             live_category_value: live.liveCategoryValue,
-            thumbnail: live.liveImageUrl,
+            thumbnail: getChzzkThumbnail(live.liveImageUrl),
             title: live.liveTitle,
             open: new Date(live.openDate),
             channel: {
