@@ -60,7 +60,7 @@ export async function updateChzzkChannels() {
 
         if (!isEqualLive(prevLive, newLive)) {
           // 다른 방송으로 변경 했을때만 thumnail을 변경.
-          await db.live.update({
+          const newLive = await db.live.update({
             where: { id: prevLive.id },
             data: { thumbnail: getChzzkThumbnail(live.liveImageUrl) },
           });
