@@ -7,11 +7,13 @@
     "@hono/node-server": "^1.13.2",
     "@prisma/client": "^5.20.0",
     "discord.js": "^14.16.3",
+    "express": "^4.21.1",
     "hono": "^4.6.4",
     "lodash": "^4.17.21",
     "prisma": "^5.20.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/lodash": "^4.17.10",
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1"

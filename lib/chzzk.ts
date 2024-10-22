@@ -2,7 +2,8 @@ import { LiveContent } from "../types/interface";
 import db from "./db";
 import { sendLiveDataToDiscord } from "./discord";
 import _ from "lodash";
-import { isEqualLive } from "./utile";
+import { downloadFile, isEqualLive } from "./utile";
+import path from "path";
 
 const API_URL = "https://api.chzzk.naver.com/service/v3";
 
@@ -25,8 +26,10 @@ export async function updateChzzkChannels() {
       id: true,
     },
   });
+
   for (let channel of channels) {
     const result = await getChzzkLiveDetail(channel.id);
+
     if (result.code === 200) {
       const live = result.content;
       await db.channel.update({
@@ -57,13 +60,16 @@ export async function updateChzzkChannels() {
             title: live.liveTitle,
           },
         });
-
+        // 여기 수정
         if (!isEqualLive(prevLive, newLive)) {
           // 다른 방송으로 변경 했을때만 thumnail을 변경.
+          const thumbnailId = await downloadChzzkThumbnail(live.liveImageUrl);
+
           const newLive = await db.live.update({
             where: { id: prevLive.id },
-            data: { thumbnail: getChzzkThumbnail(live.liveImageUrl) },
+            data: { thumbnail: thumbnailId },
           });
+
           await sendLiveDataToDiscord(newLive);
         }
         if (live.closeDate) {
@@ -77,13 +83,14 @@ export async function updateChzzkChannels() {
           });
         }
       } else {
+        const thumbnailId = await downloadChzzkThumbnail(live.liveImageUrl);
         const newLive = await db.live.create({
           data: {
             id: live.liveId,
             category: live.categoryType,
             live_category: live.liveCategory,
             live_category_value: live.liveCategoryValue,
-            thumbnail: getChzzkThumbnail(live.liveImageUrl),
+            thumbnail: thumbnailId,
             title: live.liveTitle,
             open: new Date(live.openDate),
             channel: {
@@ -106,4 +113,14 @@ export function getChzzkThumbnail(url: string) {
   const baseUrl = splitUrl[0];
 
   return `${baseUrl}/image_480.jpg?date=${new Date().getTime()}`;
+}
+
+/** chzzk섬네일이 시간별로 변동이 생겨 사용.  */
+export async function downloadChzzkThumbnail(liveThumbnail: string) {
+  const IMAGE_DIR = path.join(__dirname, "../public", "image");
+  const url = getChzzkThumbnail(liveThumbnail);
+  const thumbnailId = `${new Date().getTime()}`;
+  const outputPath = path.join(IMAGE_DIR, thumbnailId);
+  await downloadFile(url, outputPath);
+  return thumbnailId;
 }

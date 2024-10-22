@@ -3,6 +3,11 @@ import { Hono } from "hono";
 import db from "../lib/db";
 import { sleep } from "../lib/utile";
 import { updateChzzkChannels } from "../lib/chzzk";
+import express from "express";
+
+const expressApp = express();
+
+expressApp.use(express.static("public"));
 
 const channel = new Hono().basePath("/channel");
 
@@ -48,18 +53,22 @@ channel.get("/:channelId/live", async (c) => {
   });
 });
 
-const port = 3000;
-console.log(`Server is running on port ${port}`);
+const port = 5000;
 
-serve({
+expressApp.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+/* serve({
   fetch: channel.fetch,
   port,
-});
+}); */
 
 (async () => {
-  while (true) {
-    await updateChzzkChannels();
+  await updateChzzkChannels();
+
+  /* while (true) {
     // 5분에 한번씩 반복
-    await sleep(1000 * 60 * 5);
-  }
+    // await sleep(1000 * 60 * 5);
+    break;
+  } */
 })();
