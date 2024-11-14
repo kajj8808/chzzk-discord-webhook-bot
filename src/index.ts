@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import db from "../lib/db";
 import { sleep } from "../lib/utile";
-import { updateChzzkChannels } from "../lib/chzzk";
+import { getChzzkLiveDetail, updateChzzkChannels } from "../lib/chzzk";
 import express from "express";
 
 const expressApp = express();
@@ -64,8 +64,12 @@ expressApp.listen(port, () => {
 }); */
 
 (async () => {
-  await updateChzzkChannels();
-
+  /*   await updateChzzkChannels();
+   */
+  const liveDetail = await getChzzkLiveDetail(
+    "0d027498b18371674fac3ed17247e6b8"
+  );
+  console.log(liveDetail);
   /* while (true) {
     // 5분에 한번씩 반복
     // await sleep(1000 * 60 * 5);
