@@ -2,8 +2,14 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import db from "../lib/db";
 import { sleep } from "../lib/utile";
-import { getChzzkLiveDetail, updateChzzkChannels } from "../lib/chzzk";
+import {
+  downloadChzzkThumbnail,
+  getChzzkLiveDetail,
+  getChzzkThumbnail,
+  updateChzzkChannels,
+} from "../lib/chzzk";
 import express from "express";
+import { writeFileSync } from "fs";
 
 const expressApp = express();
 
@@ -64,15 +70,10 @@ expressApp.listen(port, () => {
 }); */
 
 (async () => {
-  /*   await updateChzzkChannels();
-   */
-  const liveDetail = await getChzzkLiveDetail(
-    "0d027498b18371674fac3ed17247e6b8"
-  );
-  console.log(liveDetail);
-  /* while (true) {
+  while (true) {
     // 5분에 한번씩 반복
-    // await sleep(1000 * 60 * 5);
+    await sleep(1000 * 60 * 5);
+    await updateChzzkChannels();
     break;
-  } */
+  }
 })();
